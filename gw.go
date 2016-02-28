@@ -37,11 +37,14 @@ var (
 )
 
 func init() {
+	// path default is current
+	p, _ := os.Getwd()
+
 	fl = flag.NewFlagSet(os.Args[0], flag.ContinueOnError)
 	fl.BoolVar(&version, "version", false, "print version")
 	fl.BoolVar(&debug, "debug", false, "Enable debug output")
 	fl.StringVar(&event, "event", "WRITE", "watch event [CREATE, WRITE, REMOVE, RENAME, CHMOD]")
-	fl.StringVar(&path, "path", "", "watch directory path")
+	fl.StringVar(&path, "path", p, "watch directory path")
 	fl.StringVar(&file, "file", "go", "watch file extension")
 	fl.StringVar(&command, "command", "", "Execute command after event flag")
 }
@@ -60,11 +63,6 @@ func main() {
 
 	// split command flag
 	cmd := strings.Split(command, " ")
-	// path default is current
-	if path == "" {
-		p, _ := os.Getwd()
-		path = p
-	}
 
 	// Initial fsnotify watcher
 	watcher, err := fsnotify.NewWatcher()
